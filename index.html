@@ -1,0 +1,88 @@
+<html>
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+        <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+	    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>        
+        <style>
+            a { text-decoration: none; }
+        </style>
+    </head>
+    <body>
+        <table id="kdprice" class="display compact" >
+            <thead>
+                <tr>
+                    <th>商品</th>
+                    <th>現價</th>
+                    <th>Blog 價</th>
+                    <th>價差</th>
+                    <th>Post</th>
+                    <th>張貼日期</th>
+                    <th>查價日期</th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <th>商品</th>
+                    <th>現價</th>
+                    <th>Blog 價</th>
+                    <th>價差</th>
+                    <th>Post</th>
+                    <th>張貼日期</th>
+                    <th>查價日期</th>
+                </tr>
+            </tfoot>
+        </table>
+        <script type="text/javascript">
+            $(document).ready(function () {
+            $('#kdprice').DataTable({
+                pageLength: 25,
+                order: [[5, 'asc']],
+                ajax: {
+                    url: 'data.json',
+                    dataSrc: ''
+                },
+                columns: [
+                    {
+                        data: {item : "item", amznLink : "amznLink"},
+                        render: function (data, type) {
+                            return '<a href="' + data.amznLink + '" target="_blank">' + data.item + '</a>';
+                        }
+                    },                    
+                    {
+                        data: "currentPrice",                        
+                    },
+                    {
+                        data: "blogPrice",                        
+                    },
+                    {
+                        data: {currentPrice : "currentPrice", blogPrice : "blogPrice"},
+                        render: function (data, type) {
+                            return (((data.blogPrice - data.currentPrice)/data.blogPrice)*100).toFixed(2) + '%';
+                        }
+                    }, 
+                    {
+                        data: {blogTitle : "blogTitle", blogLink : "blogLink"},
+                        render: function (data, type) {
+                            return '<a href="' + data.blogLink + '" target="_blank">' + data.blogTitle + '</a>';                        
+                        }
+                    },
+                    {
+                        data: "blogDate",
+                        render: function (data, type) {
+                            return data.substring(0,10)
+                        }                            
+                    },
+                    {
+                        data: "itemDate",
+                        render: function (data, type) {
+                            return data.substring(0,10)
+                        }
+                    }
+                ],
+            });
+        });
+        </script>
+    </body>    
+</html>
